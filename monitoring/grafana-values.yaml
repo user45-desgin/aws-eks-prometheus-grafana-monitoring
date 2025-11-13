@@ -1,0 +1,36 @@
+grafana:
+  adminUser: admin
+  adminPassword: P@ssw0rd123
+
+  service:
+    type: LoadBalancer
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://prometheus-kube-prometheus-prometheus.monitoring.svc:9090
+          access: proxy
+          isDefault: true
+
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: 'default'
+          orgId: 1
+          folder: ''
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards
+
+  dashboards:
+    default:
+      flask-dashboard:
+        json: |
+          {{ .Files.Get "dashboards/flask-dashboard.json" | indent 8 }}
+
