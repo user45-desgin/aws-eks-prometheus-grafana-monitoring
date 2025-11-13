@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: flask-app-alerts
+  namespace: monitoring
+spec:
+  groups:
+    - name: flask-app-alerts
+      rules:
+        - alert: FlaskPodRestarting
+          expr: increase(kube_pod_container_status_restarts_total{namespace="flask-app"}[5m]) > 3
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Flask Pod Restarting"
+            description: "Flask pod restarted more than 3 times in 5 minutes."
+
