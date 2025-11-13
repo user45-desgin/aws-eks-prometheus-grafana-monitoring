@@ -1,0 +1,150 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  annotations:
+    deprecated.daemonset.template.generation: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"DaemonSet","metadata":{"annotations":{},"labels":{"k8s-app":"fluent-bit","kubernetes.io/cluster-service":"true","version":"v1"},"name":"fluent-bit","namespace":"amazon-cloudwatch"},"spec":{"selector":{"matchLabels":{"k8s-app":"fluent-bit"}},"template":{"metadata":{"labels":{"k8s-app":"fluent-bit","kubernetes.io/cluster-service":"true","version":"v1"}},"spec":{"containers":[{"env":[{"name":"AWS_REGION","valueFrom":{"configMapKeyRef":{"key":"logs.region","name":"fluent-bit-cluster-info"}}},{"name":"CLUSTER_NAME","valueFrom":{"configMapKeyRef":{"key":"cluster.name","name":"fluent-bit-cluster-info"}}},{"name":"HTTP_SERVER","valueFrom":{"configMapKeyRef":{"key":"http.server","name":"fluent-bit-cluster-info"}}},{"name":"HTTP_PORT","valueFrom":{"configMapKeyRef":{"key":"http.port","name":"fluent-bit-cluster-info"}}},{"name":"READ_FROM_HEAD","valueFrom":{"configMapKeyRef":{"key":"read.head","name":"fluent-bit-cluster-info"}}},{"name":"READ_FROM_TAIL","valueFrom":{"configMapKeyRef":{"key":"read.tail","name":"fluent-bit-cluster-info"}}},{"name":"HOST_NAME","valueFrom":{"fieldRef":{"fieldPath":"spec.nodeName"}}},{"name":"HOSTNAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"metadata.name"}}},{"name":"CI_VERSION","value":"k8s/1.3.38"}],"image":"public.ecr.aws/aws-observability/aws-for-fluent-bit:2.32.4","imagePullPolicy":"Always","name":"fluent-bit","resources":{"limits":{"memory":"200Mi"},"requests":{"cpu":"500m","memory":"100Mi"}},"volumeMounts":[{"mountPath":"/var/fluent-bit/state","name":"fluentbitstate"},{"mountPath":"/var/log","name":"varlog","readOnly":true},{"mountPath":"/var/lib/docker/containers","name":"varlibdockercontainers","readOnly":true},{"mountPath":"/fluent-bit/etc/","name":"fluent-bit-config"},{"mountPath":"/run/log/journal","name":"runlogjournal","readOnly":true},{"mountPath":"/var/log/dmesg","name":"dmesg","readOnly":true}]}],"dnsPolicy":"ClusterFirstWithHostNet","hostNetwork":true,"nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"fluent-bit","terminationGracePeriodSeconds":10,"volumes":[{"hostPath":{"path":"/var/fluent-bit/state"},"name":"fluentbitstate"},{"hostPath":{"path":"/var/log"},"name":"varlog"},{"hostPath":{"path":"/var/lib/docker/containers"},"name":"varlibdockercontainers"},{"configMap":{"name":"fluent-bit-config"},"name":"fluent-bit-config"},{"hostPath":{"path":"/run/log/journal"},"name":"runlogjournal"},{"hostPath":{"path":"/var/log/dmesg"},"name":"dmesg"}]}}}}
+  creationTimestamp: "2025-11-12T13:16:54Z"
+  generation: 1
+  labels:
+    k8s-app: fluent-bit
+    kubernetes.io/cluster-service: "true"
+    version: v1
+  name: fluent-bit
+  namespace: amazon-cloudwatch
+  resourceVersion: "547003"
+  uid: bbf5fddc-fdc4-45b7-bc00-afb29f6ecf4e
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      k8s-app: fluent-bit
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        k8s-app: fluent-bit
+        kubernetes.io/cluster-service: "true"
+        version: v1
+    spec:
+      containers:
+      - env:
+        - name: AWS_REGION
+          valueFrom:
+            configMapKeyRef:
+              key: logs.region
+              name: fluent-bit-cluster-info
+        - name: CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: cluster.name
+              name: fluent-bit-cluster-info
+        - name: HTTP_SERVER
+          valueFrom:
+            configMapKeyRef:
+              key: http.server
+              name: fluent-bit-cluster-info
+        - name: HTTP_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: http.port
+              name: fluent-bit-cluster-info
+        - name: READ_FROM_HEAD
+          valueFrom:
+            configMapKeyRef:
+              key: read.head
+              name: fluent-bit-cluster-info
+        - name: READ_FROM_TAIL
+          valueFrom:
+            configMapKeyRef:
+              key: read.tail
+              name: fluent-bit-cluster-info
+        - name: HOST_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: CI_VERSION
+          value: k8s/1.3.38
+        image: public.ecr.aws/aws-observability/aws-for-fluent-bit:2.32.4
+        imagePullPolicy: Always
+        name: fluent-bit
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 500m
+            memory: 100Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/fluent-bit/state
+          name: fluentbitstate
+        - mountPath: /var/log
+          name: varlog
+          readOnly: true
+        - mountPath: /var/lib/docker/containers
+          name: varlibdockercontainers
+          readOnly: true
+        - mountPath: /fluent-bit/etc/
+          name: fluent-bit-config
+        - mountPath: /run/log/journal
+          name: runlogjournal
+          readOnly: true
+        - mountPath: /var/log/dmesg
+          name: dmesg
+          readOnly: true
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: fluent-bit
+      serviceAccountName: fluent-bit
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - hostPath:
+          path: /var/fluent-bit/state
+          type: ""
+        name: fluentbitstate
+      - hostPath:
+          path: /var/log
+          type: ""
+        name: varlog
+      - hostPath:
+          path: /var/lib/docker/containers
+          type: ""
+        name: varlibdockercontainers
+      - configMap:
+          defaultMode: 420
+          name: fluent-bit-config
+        name: fluent-bit-config
+      - hostPath:
+          path: /run/log/journal
+          type: ""
+        name: runlogjournal
+      - hostPath:
+          path: /var/log/dmesg
+          type: ""
+        name: dmesg
+  updateStrategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+status:
+  currentNumberScheduled: 2
+  desiredNumberScheduled: 2
+  numberAvailable: 2
+  numberMisscheduled: 0
+  numberReady: 2
+  observedGeneration: 1
+  updatedNumberScheduled: 2
