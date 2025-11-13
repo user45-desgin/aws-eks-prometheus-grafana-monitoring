@@ -4,6 +4,8 @@ grafana:
 
   service:
     type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 
   datasources:
     datasources.yaml:
@@ -19,9 +21,9 @@ grafana:
     dashboardproviders.yaml:
       apiVersion: 1
       providers:
-        - name: 'default'
+        - name: "default"
           orgId: 1
-          folder: ''
+          folder: ""
           type: file
           disableDeletion: false
           editable: true
@@ -31,6 +33,5 @@ grafana:
   dashboards:
     default:
       flask-dashboard:
-        json: |
-          {{ .Files.Get "dashboards/flask-dashboard.json" | indent 8 }}
+        file: ~/aws-eks-prometheus-grafana-monitoring/monitoring/dashboards/flask-dashboard.json
 

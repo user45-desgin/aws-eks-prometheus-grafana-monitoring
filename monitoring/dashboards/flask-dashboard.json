@@ -1,0 +1,19 @@
+{
+  "id": null,
+  "title": "Flask App Dashboard",
+  "schemaVersion": 36,
+  "version": 1,
+  "uid": "flask-basic",
+  "panels": [
+    {
+      "type": "graph",
+      "title": "CPU Usage (Node)",
+      "targets": [
+        {
+          "expr": "node_cpu_seconds_total",
+          "legendFormat": "{{cpu}}"
+        }
+      ]
+    }
+  ]
+}
