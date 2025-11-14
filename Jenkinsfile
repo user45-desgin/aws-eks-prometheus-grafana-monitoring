@@ -6,7 +6,7 @@ pipeline {
         ECR_REGISTRY = "723619976108.dkr.ecr.us-east-1.amazonaws.com"
         ECR_REPO = "flask-app-repo"
         IMAGE_TAG = "v${BUILD_NUMBER}"
-        KUBECONFIG = credentials('KUBE_CONFIG')
+        KUBECONFIG_PATH = "/var/lib/jenkins/.kube/config"
     }
 
     stages {
@@ -23,18 +23,20 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh """
+                    echo "Building Docker image..."
                     docker build -t ${ECR_REPO}:${IMAGE_TAG} ./flask-app
                 """
             }
         }
 
-        stage('Login to Amazon ECR') {
+        stage('Login to ECR') {
             steps {
-                withCredentials([[
-                    $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'AWS-CREDENTIALS'
-                ]]) {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                  accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                                  secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                                  credentialsId: 'AWS-CREDENTIALS']]) {
                     sh """
+                        echo "Logging into Amazon ECR..."
                         aws ecr get-login-password --region ${AWS_REGION} \
                         | docker login --username AWS --password-stdin ${ECR_REGISTRY}
                     """
@@ -45,29 +47,34 @@ pipeline {
         stage('Tag & Push Image to ECR') {
             steps {
                 sh """
+                    echo "Pushing image to ECR..."
                     docker tag ${ECR_REPO}:${IMAGE_TAG} ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
                     docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
                 """
             }
         }
 
-        stage('Update Helm Chart With New Image') {
+        stage('Update Helm Chart') {
             steps {
                 sh """
-                    sed -i "s|repository: .*|repository: ${ECR_REGISTRY}/${ECR_REPO}|" helm-chart/flask-chart/flask-chart/values.yaml
-                    sed -i "s|tag: .*|tag: ${IMAGE_TAG}|" helm-chart/flask-chart/flask-chart/values.yaml
+                    echo "Updating Helm chart..."
+                    sed -i 's|repository: .*|repository: ${ECR_REGISTRY}/${ECR_REPO}|' helm-chart/flask-chart/values.yaml
+                    sed -i 's|tag: .*|tag: "${IMAGE_TAG}"|' helm-chart/flask-chart/values.yaml
                 """
             }
         }
 
         stage('Deploy to EKS Using Helm') {
             steps {
-                withCredentials([[
-                    $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'AWS-CREDENTIALS'
-                ]]) {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                  accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                                  secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                                  credentialsId: 'AWS-CREDENTIALS']]) {
                     sh """
-                        aws eks update-kubeconfig --region ${AWS_REGION} --name flask-cluster
+                        echo "Using existing kubeconfig..."
+                        export KUBECONFIG=${KUBECONFIG_PATH}
+
+                        echo "Deploying application to EKS..."
                         helm upgrade --install flask-release helm-chart/flask-chart \
                           --namespace flask-app --create-namespace
                     """
@@ -78,6 +85,8 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 sh """
+                    echo "Checking deployment rollout..."
+                    export KUBECONFIG=${KUBECONFIG_PATH}
                     kubectl rollout status deployment/flask-release-flask-chart -n flask-app
                 """
             }
