@@ -71,7 +71,7 @@ pipeline {
                         sh """
                             echo "Deploying to EKS using Helm..."
                             aws eks update-kubeconfig --region ${AWS_REGION} --name flask-cluster
-                            helm upgrade --install flask-release helm-chart/flask-chart \
+                            helm upgrade --install flask-release helm-chart/flask-chart/flask-chart \
                               --namespace flask-app --create-namespace
                         """
                     }
