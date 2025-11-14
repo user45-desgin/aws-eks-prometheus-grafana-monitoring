@@ -75,7 +75,7 @@ pipeline {
                         export KUBECONFIG=${KUBECONFIG_PATH}
 
                         echo "Deploying application to EKS..."
-                        helm upgrade --install flask-release helm-chart/flask-chart \
+                        helm upgrade --install flask-release helm-chart/flask-chart/flask-chart \
                           --namespace flask-app --create-namespace
                     """
                 }
