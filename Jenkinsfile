@@ -54,8 +54,8 @@ pipeline {
         stage('Update Helm Chart With New Image') {
             steps {
                 sh """
-                    sed -i "s|repository: .*|repository: ${ECR_REGISTRY}/${ECR_REPO}|" helm-chart/flask-chart/values.yaml
-                    sed -i "s|tag: .*|tag: ${IMAGE_TAG}|" helm-chart/flask-chart/values.yaml
+                    sed -i "s|repository: .*|repository: ${ECR_REGISTRY}/${ECR_REPO}|" helm-chart/flask-chart/flask-chart/values.yaml
+                    sed -i "s|tag: .*|tag: ${IMAGE_TAG}|" helm-chart/flask-chart/flask-chart/values.yaml
                 """
             }
         }
