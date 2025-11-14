@@ -13,8 +13,10 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'main',
+                git(
+                    branch: 'main',
                     url: 'https://github.com/user45-desgin/aws-eks-prometheus-grafana-monitoring.git'
+                )
             }
         }
 
