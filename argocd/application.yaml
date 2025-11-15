@@ -1,0 +1,143 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"argoproj.io/v1alpha1","kind":"Application","metadata":{"annotations":{},"name":"flask-gitops","namespace":"argocd"},"spec":{"destination":{"namespace":"flask-app","server":"https://kubernetes.default.svc"},"project":"default","source":{"path":"helm-chart/flask-chart/flask-chart","repoURL":"https://github.com/user45-desgin/aws-eks-prometheus-grafana-monitoring.git","targetRevision":"main"},"syncPolicy":{"automated":{"prune":true,"selfHeal":true},"syncOptions":["CreateNamespace=true"]}}}
+  creationTimestamp: "2025-11-15T06:59:56Z"
+  generation: 26
+  name: flask-gitops
+  namespace: argocd
+  resourceVersion: "1239580"
+  uid: 528c796d-1c1e-4059-a868-33e7ff871055
+spec:
+  destination:
+    namespace: flask-app
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: helm-chart/flask-chart/flask-chart
+    repoURL: https://github.com/user45-desgin/aws-eks-prometheus-grafana-monitoring.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+status:
+  controllerNamespace: argocd
+  health:
+    lastTransitionTime: "2025-11-15T07:20:42Z"
+    status: Healthy
+  history:
+  - deployStartedAt: "2025-11-15T06:59:59Z"
+    deployedAt: "2025-11-15T07:00:00Z"
+    id: 0
+    initiatedBy:
+      automated: true
+    revision: 62d5d3f338a3676a95f7cbba68a8bf220cd193fe
+    source:
+      path: helm-chart/flask-chart/flask-chart
+      repoURL: https://github.com/user45-desgin/aws-eks-prometheus-grafana-monitoring.git
+      targetRevision: main
+  - deployStartedAt: "2025-11-15T07:20:39Z"
+    deployedAt: "2025-11-15T07:20:40Z"
+    id: 1
+    initiatedBy:
+      automated: true
+    revision: 13d516932c2a2bf115ab53724b5938c965eab0ce
+    source:
+      path: helm-chart/flask-chart/flask-chart
+      repoURL: https://github.com/user45-desgin/aws-eks-prometheus-grafana-monitoring.git
+      targetRevision: main
+  operationState:
+    finishedAt: "2025-11-15T07:20:40Z"
+    message: successfully synced (all tasks run)
+    operation:
+      initiatedBy:
+        automated: true
+      retry:
+        limit: 5
+      sync:
+        prune: true
+        revision: 13d516932c2a2bf115ab53724b5938c965eab0ce
+        source:
+          path: helm-chart/flask-chart/flask-chart
+          repoURL: https://github.com/user45-desgin/aws-eks-prometheus-grafana-monitoring.git
+          targetRevision: main
+        syncOptions:
+        - CreateNamespace=true
+    phase: Succeeded
+    startedAt: "2025-11-15T07:20:39Z"
+    syncResult:
+      resources:
+      - group: ""
+        hookPhase: Running
+        kind: ServiceAccount
+        message: serviceaccount/flask-gitops-flask-chart unchanged
+        name: flask-gitops-flask-chart
+        namespace: flask-app
+        status: Synced
+        syncPhase: Sync
+        version: v1
+      - group: ""
+        hookPhase: Running
+        kind: Service
+        message: service/flask-gitops-flask-chart unchanged
+        name: flask-gitops-flask-chart
+        namespace: flask-app
+        status: Synced
+        syncPhase: Sync
+        version: v1
+      - group: apps
+        hookPhase: Running
+        images:
+        - 723619976108.dkr.ecr.us-east-1.amazonaws.com/flask-app-repo:v24
+        kind: Deployment
+        message: deployment.apps/flask-gitops-flask-chart configured
+        name: flask-gitops-flask-chart
+        namespace: flask-app
+        status: Synced
+        syncPhase: Sync
+        version: v1
+      revision: 13d516932c2a2bf115ab53724b5938c965eab0ce
+      source:
+        path: helm-chart/flask-chart/flask-chart
+        repoURL: https://github.com/user45-desgin/aws-eks-prometheus-grafana-monitoring.git
+        targetRevision: main
+  reconciledAt: "2025-11-15T07:24:07Z"
+  resourceHealthSource: appTree
+  resources:
+  - kind: Service
+    name: flask-gitops-flask-chart
+    namespace: flask-app
+    status: Synced
+    version: v1
+  - kind: ServiceAccount
+    name: flask-gitops-flask-chart
+    namespace: flask-app
+    status: Synced
+    version: v1
+  - group: apps
+    kind: Deployment
+    name: flask-gitops-flask-chart
+    namespace: flask-app
+    status: Synced
+    version: v1
+  sourceHydrator: {}
+  sourceType: Helm
+  summary:
+    images:
+    - 723619976108.dkr.ecr.us-east-1.amazonaws.com/flask-app-repo:v24
+  sync:
+    comparedTo:
+      destination:
+        namespace: flask-app
+        server: https://kubernetes.default.svc
+      source:
+        path: helm-chart/flask-chart/flask-chart
+        repoURL: https://github.com/user45-desgin/aws-eks-prometheus-grafana-monitoring.git
+        targetRevision: main
+    revision: 13d516932c2a2bf115ab53724b5938c965eab0ce
+    status: Synced
